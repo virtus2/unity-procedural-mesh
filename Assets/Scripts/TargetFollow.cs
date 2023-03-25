@@ -13,9 +13,9 @@ public class TargetFollow : MonoBehaviour
 {
     [SerializeField] private GameObject objectToFollow;
     [SerializeField] private bool smoothFollow = true;
-    [SerializeField] private Vector3 offset;
-    [SerializeField] private float sqrDistance;
-    [SerializeField] private float speed;
+    [SerializeField] private Vector3 offset = new Vector3(10f,0f,0f);
+    [SerializeField] private Quaternion angle = new Quaternion(0f, 0f, 0f, 0f);
+    [SerializeField] private float speed = 10f;
 
     private Transform targetTransform;
     private Transform followerTransform; // cache the transform of this object. 
@@ -42,19 +42,24 @@ public class TargetFollow : MonoBehaviour
 
     private void Update()
     {
-        float sqrMagnitude = (followerTransform.position - targetTransform.position).sqrMagnitude;
-        if (sqrMagnitude < 0.02f)
-        {
-            IsFollowing = false;
-        }
-        else
-        {
-            IsFollowing = true;
-        }
-
         if (IsFollowing)
         {
-            followerTransform.position = Vector3.Lerp(followerTransform.position, targetTransform.position, Time.deltaTime * speed);
+            if (smoothFollow)
+            {
+                followerTransform.position = Vector3.Lerp(followerTransform.position, targetTransform.position + offset, Time.deltaTime * speed);
+                followerTransform.rotation = Quaternion.Lerp(followerTransform.rotation, angle, Time.deltaTime * speed);
+
+                if ((followerTransform.position - targetTransform.position).sqrMagnitude < 0.02f)
+                {
+                    followerTransform.position = targetTransform.position + offset;
+                    followerTransform.rotation = angle;
+                }
+            }
+            else
+            {
+                followerTransform.position = targetTransform.position + offset;
+                followerTransform.rotation = angle;
+            }
         }
 
 
