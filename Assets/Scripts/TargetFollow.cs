@@ -49,16 +49,14 @@ public class TargetFollow : MonoBehaviour
                 followerTransform.position = Vector3.Lerp(followerTransform.position, targetTransform.position + offset, Time.deltaTime * speed);
                 followerTransform.rotation = Quaternion.Lerp(followerTransform.rotation, angle, Time.deltaTime * speed);
 
-                if ((followerTransform.position - targetTransform.position).sqrMagnitude < 0.02f)
+                if ((followerTransform.position - targetTransform.position).sqrMagnitude < 0.5f)
                 {
-                    followerTransform.position = targetTransform.position + offset;
-                    followerTransform.rotation = angle;
+                    followerTransform.SetPositionAndRotation(targetTransform.position, angle);
                 }
             }
             else
             {
-                followerTransform.position = targetTransform.position + offset;
-                followerTransform.rotation = angle;
+                followerTransform.SetPositionAndRotation(targetTransform.position, angle);
             }
         }
 

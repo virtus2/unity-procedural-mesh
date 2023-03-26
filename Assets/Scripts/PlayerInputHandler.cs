@@ -11,14 +11,14 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputHandler : MonoBehaviour
 {
-    private Rigidbody rigidbody;
+    private Rigidbody rb;
     private Transform playerTransform;
     private Camera mainCamera;
 
     private void Awake()
     {
         playerTransform = transform;
-        rigidbody = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         mainCamera = Camera.main;
     }
 
@@ -36,7 +36,7 @@ public class PlayerInputHandler : MonoBehaviour
             
             Debug.Log(worldPosition);
             var positionToMove = new Vector3(worldPosition.x, 0f, worldPosition.z);
-            rigidbody.MovePosition(positionToMove);
+            rb.MovePosition(positionToMove);
         }
 
     }
