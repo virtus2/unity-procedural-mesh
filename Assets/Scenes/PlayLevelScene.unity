@@ -545,10 +545,10 @@ MonoBehaviour:
     m_ActionId: 9fce5861-3f54-426b-801d-b818ccdb19eb
     m_ActionName: Player/Move[/Mouse/leftButton]
   m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
+  m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 1576911400}
 --- !u!54 &998828892
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -684,7 +684,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectToFollow: {fileID: 998828885}
   smoothFollow: 1
-  offset: {x: 2, y: 5, z: -5}
+  offset: {x: 0, y: 10, z: -5}
   angle: {x: 0.5, y: 0, z: 0, w: 0.8660254}
   speed: 5
 --- !u!114 &1576911403
