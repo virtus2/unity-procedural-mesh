@@ -11,20 +11,24 @@ using UnityEngine;
 
 public class TargetFollow : MonoBehaviour
 {
+    [SerializeField] private Transform followerTransform; // cache the transform of this object. 
     [SerializeField] private GameObject objectToFollow;
     [SerializeField] private bool smoothFollow = true;
-    [SerializeField] private Vector3 offset = new Vector3(10f,0f,0f);
     [SerializeField] private Quaternion angle = new Quaternion(0f, 0f, 0f, 0f);
     [SerializeField] private float speed = 10f;
+    [SerializeField] private float threshold = 0.05f;
 
     private Transform targetTransform;
-    private Transform followerTransform; // cache the transform of this object. 
     private bool IsFollowing = true;
 
     private void Awake()
     {
-        followerTransform = transform;
+        if (!followerTransform)
+        {
+            Debug.LogWarning("follower Transform is null!");
+        }
 
+        followerTransform.rotation = angle;
         SetTarget(objectToFollow);
     }
 
@@ -40,16 +44,20 @@ public class TargetFollow : MonoBehaviour
         objectToFollow = tr.gameObject;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
+        if (!followerTransform)
+        {
+            return;
+        }
+
         if (IsFollowing)
         {
             if (smoothFollow)
             {
-                followerTransform.position = Vector3.Lerp(followerTransform.position, targetTransform.position + offset, Time.deltaTime * speed);
-                followerTransform.rotation = Quaternion.Lerp(followerTransform.rotation, angle, Time.deltaTime * speed);
+                followerTransform.position = Vector3.Lerp(followerTransform.position, targetTransform.position, Time.deltaTime * speed);
 
-                if ((followerTransform.position - targetTransform.position).sqrMagnitude < 0.5f)
+                if ((followerTransform.position - targetTransform.position).sqrMagnitude < threshold)
                 {
                     followerTransform.SetPositionAndRotation(targetTransform.position, angle);
                 }
