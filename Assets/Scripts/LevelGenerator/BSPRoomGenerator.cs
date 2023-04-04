@@ -18,6 +18,7 @@ public class BSPRoomGenerator : MonoBehaviour
     public float horizontalSplitWeight = 0.5f;
     public int minRoomWidth = 10, minRoomHeight = 10;
     public int dungeonWidth = 100, dungeonHeight = 100;
+    public int offset = 2;
     private List<BoundsInt> roomList;
 
     private void Start()
@@ -33,11 +34,11 @@ public class BSPRoomGenerator : MonoBehaviour
         {
             foreach (var room in roomList)
             {
-                for (int y = room.yMin; y <= room.yMax; y++)
+                for (int y = offset; y<room.size.y-offset; y++)
                 {
-                    for (int x = room.xMin; x <= room.xMax; x++)
+                    for (int x = offset; x < room.size.x - offset; x++)
                     {
-                        Vector3 pos = new Vector3(x, y, 0);
+                        Vector3 pos = new Vector3(room.min.x + x, 0, room.min.y + y);
                         Gizmos.DrawCube(pos, Vector3.one);
                     }
                 }
