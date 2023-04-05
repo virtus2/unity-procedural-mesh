@@ -46,23 +46,27 @@ public class RoadGenerator : MonoBehaviour
         endPosition = spline[spline.Count-1].Position;
 
         RandomizeSpline();
-        
+
         for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < width; x++)
             {
-                float amount = 0;
-                for (int i = 0; i < spline.Count; i++)
+                var pos = spline.EvaluatePosition((float)(y + 1) / (x + 1));
+                // Debug.Log(pos);
+                for (int i = 0; i < numKnots; i++)
                 {
-                    float distanceX = Mathf.Abs(x - spline[i].Position.x);
-                    float distanceY = Mathf.Abs(y - spline[i].Position.z);
-                    if (distanceX < 0.3f && distanceY < 0.3f)
+                    var distanceY = y - (width-spline[i].Position.z);
+                    var distanceX = x - spline[i].Position.x;
+                    distanceY *= distanceY;
+                    distanceX *= distanceX;
+                    var sqrDistance = distanceY + distanceX;
+                    if (sqrDistance < 64.0f)
                     {
-                        amount += 0.05f;
-                        noiseMap[y * width + x] = -1f;
+                        noiseMap[y * width + x] -= 1 / sqrDistance;
+                        noiseMap[y * width + x] = Mathf.Clamp(noiseMap[y * width + x], 0f, 1f);
                     }
-                }
 
+                }
             }
         }
     }

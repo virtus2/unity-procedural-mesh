@@ -55,7 +55,7 @@ public class MeshGenerator
         {
             for (int x = 0; x < width; x++)
             {
-                meshData.vertices[vertexIndex] = new Vector3(x + width, heightMap[x * width + y] * heightMultiplier, -y + height);
+                meshData.vertices[vertexIndex] = new Vector3(x, heightMap[y * width + x] * heightMultiplier, -y + height);
                 meshData.uvs[vertexIndex] = new Vector2(x / (float)width, y / (float)height);
                 if (x < width - 1 && y < height - 1)
                 {
