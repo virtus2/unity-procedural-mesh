@@ -38,7 +38,7 @@ public class RoadGenerator : MonoBehaviour
     private float3 startPosition;
     private float3 endPosition;
     
-    public void Generate(ref float[] noiseMap, int width, int height)
+    public void Generate(ref TerrainData[] terrain, int width, int height)
     {
         splineContainer = GetComponent<SplineContainer>();
         spline = splineContainer.Spline;
@@ -60,12 +60,12 @@ public class RoadGenerator : MonoBehaviour
                     distanceY *= distanceY;
                     distanceX *= distanceX;
                     var sqrDistance = distanceY + distanceX;
-                    if (sqrDistance < 64.0f)
+                    if (sqrDistance < 25f)
                     {
-                        noiseMap[y * width + x] -= 1 / sqrDistance;
-                        noiseMap[y * width + x] = Mathf.Clamp(noiseMap[y * width + x], 0f, 1f);
+                        terrain[y * width + x].type = TerrainType.GrassRoad;
+                        terrain[y * width + x].noise = 0f;
+                        terrain[y * width + x].noise = Mathf.Clamp(terrain[y * width + x].noise, 0f, 1f);
                     }
-
                 }
             }
         }

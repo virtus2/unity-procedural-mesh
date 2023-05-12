@@ -10,22 +10,25 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
+using static UnityEngine.Mesh;
 
 public struct TerrainData
 {
     public float3 position;
     public float noise;
+    public TerrainType type;
 }
 
 public class OutdoorGenerator : MonoBehaviour
 {
     [Header("Noise Settings")]
-    public int levelWidth = 100;
-    public int levelHeight = 100;
-    public float noiseScale = 10f;
-    public int octaves = 4;
+    
+    [Range(10, 250)] public int levelWidth = 100;
+    [Range(10, 250)] public int levelHeight = 100;
+    [Range(1, 20)] public float noiseScale = 10f;
+    [Range(1, 8)] public int octaves = 4;
     [Range(0,1)] public float persistance = 0.5f;
-    public float lacunarity = 2f;
+    [Range(1, 4)] public float lacunarity = 2f;
     public int seed;
     public Vector2 offset;
     public float meshHeightMultiplier;
@@ -38,33 +41,37 @@ public class OutdoorGenerator : MonoBehaviour
     public Vector3 exitPosition;
 
     private TerrainData[] terrain;
-    private float[] heightMap;
-    
+    private MeshData terrainMesh;
     public void GenerateMap()
     {
-        //
-        // Generate Noise
-        //
+        GenerateNoiseMap();
+        GenerateTerrainMesh();
+        DebugDraw();
+    }
+
+    private void GenerateNoiseMap()
+    {
+        // Generate Perlin noise 
         terrain = new TerrainData[levelHeight * levelWidth];
         float[] noiseMap = Noise.GenerateNoiseMap(levelWidth, levelHeight, seed, noiseScale, octaves, persistance, lacunarity, offset);
-        for(int i=0; i<levelHeight; i++)
+        for (int i = 0; i < levelHeight; i++)
         {
-            for(int j=0; j<levelWidth; j++)
+            for (int j = 0; j < levelWidth; j++)
             {
                 int index = i * levelWidth + j;
                 terrain[index].noise = noiseMap[index];
+                terrain[index].type = TerrainType.Grass;
             }
         }
-        roadGenerator.Generate(ref noiseMap, levelWidth, levelHeight);
-        
-        //
-        // Generate Mesh
-        //
-        MeshData meshData = MeshGenerator.GenerateMesh(noiseMap, levelWidth, levelHeight, meshHeightMultiplier, meshHeightCurve);
-
-        // 
-        // Debug draw
-        // 
+        // Modify noise using Spline(road)
+        roadGenerator.Generate(ref terrain, levelWidth, levelHeight);
+    }
+    private void GenerateTerrainMesh()
+    {
+        terrainMesh = MeshGenerator.GenerateMesh(ref terrain, levelWidth, levelHeight, meshHeightMultiplier, meshHeightCurve);
+    }
+    private void DebugDraw()
+    {
         MapDisplay display = FindObjectOfType<MapDisplay>();
         Texture2D texture = new Texture2D(levelWidth, levelHeight);
         Color[] colorMap = new Color[levelWidth * levelHeight];
@@ -72,15 +79,25 @@ public class OutdoorGenerator : MonoBehaviour
         {
             for (int x = 0; x < levelWidth; x++)
             {
-                colorMap[y * levelWidth + x] = Color.Lerp(Color.black, Color.white, noiseMap[y * levelWidth + x]);
+                int index = y * levelWidth + x;
+                switch (terrain[index].type)
+                {
+                    case TerrainType.Grass:
+                        colorMap[y * levelWidth + x] = Color.green;
+                        break;
+                    case TerrainType.GrassRoad:
+                        colorMap[y * levelWidth + x] = Color.cyan;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         texture.SetPixels(colorMap);
         texture.Apply();
 
-        display.DrawMesh(meshData, texture);
+        display.DrawMesh(terrainMesh, texture);
     }
-
     private void OnValidate()
     {
         if (levelWidth < 1)

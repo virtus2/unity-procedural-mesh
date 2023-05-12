@@ -43,7 +43,7 @@ public class MeshData
 
 public class MeshGenerator
 {
-    public static MeshData GenerateMesh(float[] heightMap, int width, int height, float heightMultiplier, AnimationCurve heightCurve)
+    public static MeshData GenerateMesh(ref TerrainData[] terrain, int width, int height, float heightMultiplier, AnimationCurve heightCurve)
     {
         int vertexIndex = 0;
         float topLeftX = (width - 1) / -2f;
@@ -55,7 +55,7 @@ public class MeshGenerator
         {
             for (int x = 0; x < width; x++)
             {
-                meshData.vertices[vertexIndex] = new Vector3(x, heightMap[y * width + x] * heightMultiplier, -y + height);
+                meshData.vertices[vertexIndex] = new Vector3(x, terrain[y * width + x].noise * heightMultiplier, -y + height);
                 meshData.uvs[vertexIndex] = new Vector2(x / (float)width, y / (float)height);
                 if (x < width - 1 && y < height - 1)
                 {
