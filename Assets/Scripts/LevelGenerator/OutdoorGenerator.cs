@@ -7,8 +7,15 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
+
+public struct TerrainData
+{
+    public float3 position;
+    public float noise;
+}
 
 public class OutdoorGenerator : MonoBehaviour
 {
@@ -30,21 +37,36 @@ public class OutdoorGenerator : MonoBehaviour
     public Vector3 entrancePosition;
     public Vector3 exitPosition;
 
+    private TerrainData[] terrain;
     private float[] heightMap;
     
     public void GenerateMap()
     {
+        //
+        // Generate Noise
+        //
+        terrain = new TerrainData[levelHeight * levelWidth];
         float[] noiseMap = Noise.GenerateNoiseMap(levelWidth, levelHeight, seed, noiseScale, octaves, persistance, lacunarity, offset);
-
-
+        for(int i=0; i<levelHeight; i++)
+        {
+            for(int j=0; j<levelWidth; j++)
+            {
+                int index = i * levelWidth + j;
+                terrain[index].noise = noiseMap[index];
+            }
+        }
         roadGenerator.Generate(ref noiseMap, levelWidth, levelHeight);
         
-
+        //
+        // Generate Mesh
+        //
         MeshData meshData = MeshGenerator.GenerateMesh(noiseMap, levelWidth, levelHeight, meshHeightMultiplier, meshHeightCurve);
+
+        // 
+        // Debug draw
+        // 
         MapDisplay display = FindObjectOfType<MapDisplay>();
-
         Texture2D texture = new Texture2D(levelWidth, levelHeight);
-
         Color[] colorMap = new Color[levelWidth * levelHeight];
         for (int y = 0; y < levelHeight; y++)
         {
