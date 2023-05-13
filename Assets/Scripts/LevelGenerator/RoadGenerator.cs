@@ -45,7 +45,7 @@ public class RoadGenerator : MonoBehaviour
         startPosition = spline[0].Position;
         endPosition = spline[spline.Count-1].Position;
 
-        RandomizeSpline();
+        RandomizeSpline(width, height);
 
         for (int y = 0; y < height; y++)
         {
@@ -70,17 +70,17 @@ public class RoadGenerator : MonoBehaviour
             }
         }
     }
-    private void RandomizeSpline()
+    private void RandomizeSpline(int width, int height)
     {
         // TODO: Use NativeSpline and Jobs?
         spline.Clear();
         // Modify the starting position
         float3 newStartPosition = startPosition;
-        newStartPosition.z = Mathf.Clamp(newStartPosition.z + Random.Range(-startZRange, startZRange), 0f, Constants.ChunkSize);
+        newStartPosition.z = Mathf.Clamp(newStartPosition.z + Random.Range(-startZRange, startZRange), 0f, height);
 
         // Modify the ending position 
         float3 newEndPosition = endPosition;
-        newEndPosition.z = Mathf.Clamp(newEndPosition.z + Random.Range(-endZRange, endZRange), 0f, Constants.ChunkSize);
+        newEndPosition.z = Mathf.Clamp(newEndPosition.z + Random.Range(-endZRange, endZRange), 0f, height);
         
         // Add the starting knot
         BezierKnot newStartKnot = new BezierKnot(newStartPosition);

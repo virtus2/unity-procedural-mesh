@@ -9,5 +9,5 @@ using UnityEngine;
 
 public static class Constants
 {
-    public static readonly float ChunkSize = 100;
+    public static readonly float ChunkSize = 64;
 }
