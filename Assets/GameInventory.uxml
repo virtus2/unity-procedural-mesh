@@ -1,9 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/GameInventory.uss?fileID=7433441132597879392&amp;guid=aca787a40dea3ab499626595b2223f94&amp;type=3#GameInventory" />
-    <ui:VisualElement name="Container" class="container">
-        <ui:VisualElement name="Equipment" class="equipment" style="position: relative; flex-basis: auto; align-items: auto; justify-content: center; flex-wrap: nowrap; width: 100%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; background-color: rgb(38, 38, 38); flex-grow: 2;" />
-        <ui:VisualElement name="Inventory" class="inventory" style="width: 100%; height: auto; flex-wrap: nowrap; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;">
-            <ui:VisualElement name="SlotContainer" class="slotContainer" style="flex-direction: row; flex-wrap: wrap; justify-content: center; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
-        </ui:VisualElement>
-    </ui:VisualElement>
-</ui:UXML>
